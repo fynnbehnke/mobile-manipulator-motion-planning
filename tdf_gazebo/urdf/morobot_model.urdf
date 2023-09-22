@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot name="morobot_model">
+
+  <link name="aruco_black">
+    <inertial>
+      <origin xyz="0.00095515 0.00084441 0.0005" rpy="0 0 0" />
+      <mass value="0.026875" />
+      <inertia ixx="0.00010781" ixy="1.2556E-06" ixz="1.8431E-24" iyy="0.00010282" iyz="2.4944E-23" izz="0.00021063" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://tdf_gazebo/meshes/aruco_black.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="0 0 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://tdf_gazebo/meshes/aruco_black.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="aruco_white">
+    <inertial>
+      <origin xyz="0.0089286 -0.0053571 0.0005" rpy="0 0 0" />
+      <mass value="0.013125" />
+      <inertia ixx="2.0329E-05" ixy="-5.8594E-06" ixz="1.2925E-23" iyy="2.256E-05" iyz="1.6305E-23" izz="4.2887E-05" />
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://tdf_gazebo/meshes/aruco_white.STL" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://tdf_gazebo/meshes/aruco_white.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint name="black_to_white" type="fixed">
+    <origin xyz="0 0 0" rpy="0 0 0" />
+    <parent link="aruco_black" />
+    <child link="aruco_white" />
+    <axis xyz="-1 0 0" />
+  </joint>
+
+  <joint name="aruco_morobot_tf" type="fixed">
+    <origin xyz="0.2 -0.1 0.0" rpy="0 0 0" />
+    <parent link="aruco_white" />
+    <child link="morobot_base_link" />
+  </joint>
+
+  <link name="morobot_base_link">
+    <inertial>
+      <origin xyz="0.078595 0.039803 -0.0080825" rpy="0 0 0" />
+      <mass value="0.48436" />
+      <inertia ixx="0.00037526" ixy="2.6112E-05" ixz="0.00028409" iyy="0.0020811" iyz="-4.8223E-06" izz="0.0022208" />
+    </inertial>
+    <visual>
+      <origin xyz="0.062 0.0275 0.008" rpy="0 0 0" />
+      <geometry>
+        <box size=".124 .055 .016" />
+      </geometry>
+      <material name="">
+        <color rgba="1 1 0 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0.062 0.0275 0.008" rpy="0 0 0" />
+      <geometry>
+        <box size=".124 .055 .016" />
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="morobot_gripping_point" />
+
+  <joint name="object_gripping_tf" type="fixed">
+    <origin xyz="0.09616 0.0275 0.016" rpy="0 3.141592 -1.5708" /> 
+    <parent link="morobot_base_link" />
+    <child link="morobot_gripping_point" />
+  </joint>
+  
+  <gazebo>
+    <static>true</static>
+  </gazebo>
+
+  <gazebo reference="aruco_black">
+    <material>Gazebo/Black</material>
+  </gazebo>
+
+  <gazebo reference="aruco_white">
+    <material>Gazebo/White</material>
+  </gazebo>
+
+  <gazebo reference="morobot_base_link">
+    <material>Gazebo/Yellow</material>
+  </gazebo>
+
+</robot>

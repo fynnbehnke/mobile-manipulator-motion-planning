@@ -1,0 +1,4 @@
+<launch>
+    <node pkg="tdf_simulation" type="camera_node" name="camera_node" output="screen" />
+    <node pkg="tdf_simulation" type="control_node" name="control_node" output="screen" />
+</launch>

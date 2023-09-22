@@ -1,0 +1,19 @@
+# Ignore all
+*
+
+# Unignore all with extensions
+!*.*
+
+# Unignore all dirs
+!*/
+
+# Unignore specified files
+!*Makefile*
+
+# Ignore specified directories
+.vscode/
+
+# Ignore files with specified extensions
+*.o
+*.out
+*.pdf:Zone.Identifier

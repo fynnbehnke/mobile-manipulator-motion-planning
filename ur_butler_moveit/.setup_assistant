@@ -1,0 +1,11 @@
+moveit_setup_assistant_config:
+  URDF:
+    package: butler_robot
+    relative_path: urdf/butler_robot.urdf.xacro
+    xacro_args: ""
+  SRDF:
+    relative_path: config/butler_robot.srdf
+  CONFIG:
+    author_name: Fynn Behnke
+    author_email: mr22m005@technikum-wien.at
+    generated_timestamp: 1693545051

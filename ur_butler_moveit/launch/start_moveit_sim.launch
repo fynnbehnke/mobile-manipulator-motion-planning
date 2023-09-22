@@ -1,0 +1,7 @@
+<launch>
+    <include file="$(find ur_butler_moveit)/launch/gazebo.launch" />
+    <include file="$(find ur_butler_moveit)/launch/move_group.launch" />
+    <include file="$(find ur_butler_moveit)/launch/moveit_rviz.launch" >
+        <arg name="rviz_config" value="$(find ur_butler_moveit)/config/rviz_config.rviz"/>
+    </include>
+</launch>

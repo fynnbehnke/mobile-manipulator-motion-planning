@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- This URDF was automatically created by SolidWorks to URDF Exporter! Originally created by Stephen Brawner (brawner@gmail.com) 
+     Commit Version: 1.6.0-4-g7f85cfe  Build Version: 1.6.7995.38578
+     For more information, please see http://wiki.ros.org/sw_urdf_exporter -->
+<robot
+  name="controlbox">
+  <link
+    name="box">
+    <inertial>
+      <origin
+        xyz="-1.7293E-17 -5.5511E-17 0"
+        rpy="0 0 0" />
+      <mass
+        value="216.68" />
+      <inertia
+        ixx="10.433"
+        ixy="1.0023E-16"
+        ixz="-6.9389E-16"
+        iyy="15.422"
+        iyz="4.2281E-16"
+        izz="15.325" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://butler_robot/meshes/controlbox/box.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="1 1 1 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://butler_robot/meshes/controlbox/box.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <link
+    name="fh_logo1">
+    <inertial>
+      <origin
+        xyz="0.40603 0.0005 -0.25853"
+        rpy="0 0 0" />
+      <mass
+        value="0.044034" />
+      <inertia
+        ixx="3.6585E-05"
+        ixy="2.9823E-16"
+        ixz="-4.8032E-06"
+        iyy="0.0013174"
+        iyz="-5.2743E-17"
+        izz="0.0012808" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://butler_robot/meshes/controlbox/fh_logo1.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.44706 0.47059 0.47843 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://butler_robot/meshes/controlbox/fh_logo1.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="J_fh_logo1"
+    type="fixed">
+    <origin
+      xyz="-0.40777 -0.27 -0.25281"
+      rpy="3.1416 -0.00044255 0" />
+    <parent
+      link="box" />
+    <child
+      link="fh_logo1" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="fh_logo2">
+    <inertial>
+      <origin
+        xyz="0.2786 0.0005 -0.15603"
+        rpy="0 0 0" />
+      <mass
+        value="0.022958" />
+      <inertia
+        ixx="2.0457E-05"
+        ixy="2.4145E-19"
+        ixz="1.4086E-06"
+        iyy="0.00016849"
+        iyz="-1.4001E-18"
+        izz="0.00014804" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://butler_robot/meshes/controlbox/fh_logo2.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.39216 0.61176 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://butler_robot/meshes/controlbox/fh_logo2.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="J_fh_logo2"
+    type="fixed">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="fh_logo1" />
+    <child
+      link="fh_logo2" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="fh_logo3">
+    <inertial>
+      <origin
+        xyz="0.19316 0.0005 -0.35769"
+        rpy="0 0 0" />
+      <mass
+        value="0.015783" />
+      <inertia
+        ixx="1.3546E-05"
+        ixy="5.4357E-20"
+        ixz="1.6197E-06"
+        iyy="6.4207E-05"
+        iyz="2.5038E-19"
+        izz="5.0664E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://butler_robot/meshes/controlbox/fh_logo3.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.5451 0.70196 0.11373 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://butler_robot/meshes/controlbox/fh_logo3.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="J_fh_logo3"
+    type="fixed">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="fh_logo2" />
+    <child
+      link="fh_logo3" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="fh_logo4">
+    <inertial>
+      <origin
+        xyz="0.40603 0.0005 -0.25853"
+        rpy="0 0 0" />
+      <mass
+        value="0.044034" />
+      <inertia
+        ixx="3.6585E-05"
+        ixy="2.9834E-16"
+        ixz="-4.8032E-06"
+        iyy="0.0013174"
+        iyz="-5.2742E-17"
+        izz="0.0012808" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://butler_robot/meshes/controlbox/fh_logo4.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.44706 0.47059 0.47843 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://butler_robot/meshes/controlbox/fh_logo4.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="J_fh_logo4"
+    type="fixed">
+    <origin
+      xyz="0.81554 -0.54 0.00036092"
+      rpy="0 0.0008851 3.1416" />
+    <parent
+      link="fh_logo3" />
+    <child
+      link="fh_logo4" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="fh_logo5">
+    <inertial>
+      <origin
+        xyz="0.19316 0.0005 -0.35769"
+        rpy="0 0 0" />
+      <mass
+        value="0.015783" />
+      <inertia
+        ixx="1.3546E-05"
+        ixy="5.357E-20"
+        ixz="1.6197E-06"
+        iyy="6.4207E-05"
+        iyz="2.4976E-19"
+        izz="5.0664E-05" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://butler_robot/meshes/controlbox/fh_logo5.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0.5451 0.70196 0.11373 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://butler_robot/meshes/controlbox/fh_logo5.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="J_fh_logo5"
+    type="fixed">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="fh_logo4" />
+    <child
+      link="fh_logo5" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+  <link
+    name="fh_logo6">
+    <inertial>
+      <origin
+        xyz="0.2786 0.0005 -0.15603"
+        rpy="0 0 0" />
+      <mass
+        value="0.022958" />
+      <inertia
+        ixx="2.0457E-05"
+        ixy="2.5577E-19"
+        ixz="1.4086E-06"
+        iyy="0.00016849"
+        iyz="-1.4007E-18"
+        izz="0.00014804" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://butler_robot/meshes/controlbox/fh_logo6.STL" />
+      </geometry>
+      <material
+        name="">
+        <color
+          rgba="0 0.39216 0.61176 1" />
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://butler_robot/meshes/controlbox/fh_logo6.STL" />
+      </geometry>
+    </collision>
+  </link>
+  <joint
+    name="J_fh_logo6"
+    type="fixed">
+    <origin
+      xyz="0 0 0"
+      rpy="0 0 0" />
+    <parent
+      link="fh_logo5" />
+    <child
+      link="fh_logo6" />
+    <axis
+      xyz="0 0 0" />
+  </joint>
+
+  <gazebo reference="box">
+    <material>Gazebo/White</material>
+  </gazebo>
+  <gazebo reference="fh_logo1">
+    <material>Gazebo/Grey</material>
+  </gazebo>
+  <gazebo reference="fh_logo2">
+    <material>Gazebo/Blue</material>
+  </gazebo>
+  <gazebo reference="fh_logo3">
+    <material>Gazebo/Green</material>
+  </gazebo>
+  <gazebo reference="fh_logo4">
+    <material>Gazebo/Grey</material>
+  </gazebo>
+  <gazebo reference="fh_logo5">
+    <material>Gazebo/Blue</material>
+  </gazebo>
+  <gazebo reference="fh_logo6">
+    <material>Gazebo/Green</material>
+  </gazebo>
+</robot>

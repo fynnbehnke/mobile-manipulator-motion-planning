@@ -1,0 +1,11 @@
+<launch>
+  <param name="robot_description" command="$(find xacro)/xacro --inorder '$(find butler_robot)/urdf/butler_robot.urdf.xacro'" />
+  <arg name="robot_x"   default="0.0" />
+  <arg name="robot_y"   default="0.0" />
+  <arg name="robot_yaw" default="0.0" />
+  <arg name="initial_ur_joint_positions" default=" -J ur_elbow_joint 1.5708 -J ur_shoulder_lift_joint -1.5708 -J ur_shoulder_pan_joint 0 -J ur_wrist_1_joint -1.5708 -J ur_wrist_2_joint -1.5708 -J ur_wrist_3_joint 0" doc="Initial joint configuration of the robot"/>
+
+  <node name="spawn_urdf" pkg="gazebo_ros" type="spawn_model" args="-param robot_description -urdf -model butler
+        -x $(arg robot_x) -y $(arg robot_y) -Y $(arg robot_yaw) -z 0.0 $(arg initial_ur_joint_positions)" respawn="false" output="screen"/>
+  
+</launch>

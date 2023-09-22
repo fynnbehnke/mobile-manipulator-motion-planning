@@ -1,0 +1,138 @@
+<?xml version="1.0" ?>
+<launch>
+  <!--                                     -->
+  <!-- Some default settings for our world -->
+  <!--                                     -->
+  <arg name="pos_x" default="0"/>
+  <arg name="pos_y" default="0"/>
+  <arg name="orient_z" default="0"/>
+  <arg name="initial_ur_joint_positions" default=" -J ur_elbow_joint 1.5708 -J ur_shoulder_lift_joint -1.5708 -J ur_shoulder_pan_joint 0 -J ur_wrist_1_joint -1.5708 -J ur_wrist_2_joint -1.5708 -J ur_wrist_3_joint 0" doc="Initial joint configuration of the robot"/>
+
+  <arg name="local_planner" default="dwb" doc="Local planner can be either dwa, eband, base, teb or pose" />
+  <arg name="with_virtual_walls" default="false" />
+  <arg name="mir_type" default="mir_100" doc="The MiR variant. Can be 'mir_100' or 'mir_250' for now." />
+  <arg name="tf_prefix" default="" doc="tf_prefix to be used by gazebo plugins and in the robot's urdf etc." />
+
+  <arg name="prefix" value="$(arg tf_prefix)" if="$(eval tf_prefix != '')" />
+  <arg name="prefix" value=""                  unless="$(eval tf_prefix != '')" />
+
+  <arg name="paused" value="false" />
+  <arg name="rvizconfig" default="$(find tdf_gazebo)/config/tdf_move.rviz" />
+
+  <arg name="motion_planner_pipeline" default="ompl" />
+
+
+	<!--                                            -->
+	<!-- Run the simulation and place the bot in it -->
+	<!--                                            -->
+	<group>
+		<!-- Some remappings to the MIR controller in Gazebo -->
+		<remap from="joint_states"                   to="mir/joint_states" />
+		<remap from="mobile_base_controller/cmd_vel" to="cmd_vel" />
+		<remap from="mobile_base_controller/odom"    to="odom" />
+
+		<!-- This one starts the Gazebo simulation -->
+	  <include file="$(find gazebo_ros)/launch/empty_world.launch">
+			<arg name="world_name" value="$(find tdf_gazebo)/world/technikum_digital_factory2.world"/>
+			<arg name="paused" value="false" />
+			<arg name="use_sim_time" value="true" /> 
+			<arg name="gui" value="true" />
+		</include>
+
+    <!-- Unpause the simulation after loading the robot model -->
+    <arg name="unpause" value="$(eval '' if arg('paused') else '-unpause')" />
+
+    <!--                              		   -->
+    <!-- Place the butler robot in the world -->
+    <!--                              		   -->
+    <include file="$(find butler_robot)/launch/butler_robot_bringup.launch">
+      <arg name="robot_x"   value="$(arg pos_x)" />
+      <arg name="robot_y"   value="$(arg pos_y)" />
+      <arg name="robot_yaw" value="$(arg orient_z)" />
+      <arg name="initial_ur_joint_positions" value="$(arg initial_ur_joint_positions)" />
+    </include>
+	</group>
+    
+  <!-- Spawn the morobot model -->
+  <group ns="morobot">
+    <env name="GAZEBO_RESOURCE_PATH" value="$(find tdf_gazebo)/media:$(optenv GAZEBO_RESOURCE_PATH)"/>
+
+    <param name="morobot_description" textfile="$(find tdf_gazebo)/urdf/morobot_model.urdf" />
+    <arg name="morobot_pose" default="-x 2.02 -y 0.2 -z 1.0 -R 0.0 -P 0.0 -Y -1.5708" doc="Pose to spawn the morobot model at"/>
+    <node name="spawn_morobot" pkg="gazebo_ros" type="spawn_model" args="-urdf -param morobot_description -model morobot_model $(arg morobot_pose)" respawn="false" output="screen" />
+
+    <!-- Set up TF croadcasters for frames -->
+    <node pkg="tf2_ros" type="static_transform_publisher" name="aruco_black_white_tf" args="0 0 0 0 0 0 aruco_black aruco_white" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="aruco_white_morobot_tf" args="0.2 -0.1 0 0 0 0 aruco_white morobot_base_link" />
+    <node pkg="tf2_ros" type="static_transform_publisher" name="morobot_gripper_tf" args="0.09616 0.0275 0.016 -1.5708 3.141592 0.0 morobot_base_link morobot_gripping_point" />
+  </group>
+
+  <!-- Map server for map based navigation -->
+  <node pkg="map_server" type="map_server" name="map_server" args="$(find tdf_gazebo)/map/technikumdigitalfactory_map.yaml" />
+
+  <!-- Load ros_control controller configurations for UR5 -->
+  <rosparam file="$(find ur_butler_moveit)/config/ros_controllers.yaml" command="load"/>
+
+  <!-- Start the controllers for UR5 -->
+  <node name="controller_spawner" pkg="controller_manager" type="spawner" respawn="false"
+    output="screen" args="ur5_controller"/>
+  
+  <include file="$(find ur_butler_moveit)/launch/move_group.launch">
+    <arg name="pipeline" value="$(arg motion_planner_pipeline)" />
+  </include>
+
+  <!-- Load ros_control controller configurations for MIR100 -->
+  <rosparam file="$(find mir_description)/config/joint_state_controller.yaml" command="load" />
+  <rosparam file="$(find mir_description)/config/diffdrive_controller.yaml" command="load" subst_value="true" />
+
+  <!-- Start the controllers for MIR100 -->
+  <node name="gazebo_controller_spawner" pkg="controller_manager" type="spawner" output="screen"
+    args="joint_state_controller mobile_base_controller"/>
+
+  <!-- MIR100 EKF -->
+  <include file="$(find mir_gazebo)/launch/includes/ekf.launch.xml">
+    <arg name="tf_prefix" value="$(arg prefix)" />
+  </include>
+
+  <!-- Add passive + mimic joints to joint_states topic -->
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <rosparam param="source_list">[mir/joint_states]</rosparam>
+    <param name="rate" value="30.0" />
+  </node>
+
+  <!-- Launch AMCL localization for MIR100 -->
+  <include file="$(find mir_navigation)/launch/amcl.launch">
+    <param name="initial_pose_x" value="$(arg pos_x)"/>
+    <param name="initial_pose_y" value="$(arg pos_y)"/>
+    <param name="initial_pose_yaw" value="$(arg orient_z)"/>
+  </include>
+
+  <include file="$(find mir_navigation)/launch/move_base.xml">
+    <arg name="local_planner" value="$(arg local_planner)"/>
+    <arg name="with_virtual_walls" value="$(arg with_virtual_walls)" />
+    <arg name="prefix" value="$(arg prefix)" />
+  </include>
+
+  <node name="rqt_robot_steering" pkg="rqt_robot_steering" type="rqt_robot_steering">
+      <param name="default_topic" value="cmd_vel"/>
+      <param name="default_vx_max" value="1.0" />
+      <param name="default_vx_min" value="-1.0" />
+      <param name="default_vw_max" value="1.5" />
+      <param name="default_vw_min" value="-1.5" />
+  </node>
+
+  <!-- Merge Laser Scans -->
+  <node pkg="ira_laser_tools" name="laserscan_multi_merger" type="laserscan_multi_merger">
+      <param name="destination_frame" value="base_link"/>
+      <param name="scan_destination_topic" value="/scan"/>
+      <param name="laserscan_topics" value ="/f_scan /b_scan" />
+  </node>
+
+  <!-- Robot state publisher -->
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" output="screen" />
+
+  <!-- Launch rviz -->
+  <node name="rviz" pkg="rviz" type="rviz"
+        args="-d $(arg rvizconfig)" required="true" />
+
+</launch>

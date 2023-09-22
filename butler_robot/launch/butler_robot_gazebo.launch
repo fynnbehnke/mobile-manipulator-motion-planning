@@ -1,0 +1,12 @@
+<launch>
+    <arg name="pos_x" default="0"/>
+	<arg name="pos_y" default="0"/>
+	<arg name="orient_z" default="0"/>
+
+    <include file="$(find gazebo_ros)/launch/empty_world.launch"/>
+    <include file="$(find butler_robot)/launch/butler_robot_bringup.launch">
+        <arg name="robot_x"   value="$(arg pos_x)" />
+        <arg name="robot_y"   value="$(arg pos_y)" />
+        <arg name="robot_yaw" value="$(arg orient_z)" />
+    </include>
+</launch>

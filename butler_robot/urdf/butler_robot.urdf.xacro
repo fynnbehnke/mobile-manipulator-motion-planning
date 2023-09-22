@@ -1,0 +1,135 @@
+<?xml version="1.0"?>
+<!-- Build the complete robot of common-stuff, mir, ur, controlbox and eef. Loads all components and connects them -->
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="butler_robot">
+
+  
+  <!-- MiR100 base -->
+  <xacro:include filename="$(find mir_description)/urdf/include/common.gazebo.xacro" />
+  <xacro:include filename="$(find mir_description)/urdf/include/mir_100_v1.urdf.xacro" />
+  <xacro:mir_100 prefix=""/>
+  <xacro:controller_plugin_gazebo robot_namespace=""/>
+
+
+  <!-- UR5 arm -->
+  <xacro:include filename="$(find ur_description)/urdf/inc/ur5_macro.xacro" />
+  <xacro:ur5_robot prefix="ur_">
+    <xacro:property name="shoulder_pan_lower_limit"   value="${-pi}"/>
+    <xacro:property name="shoulder_pan_upper_limit"   value="${pi}" />
+
+    <xacro:property name="shoulder_lift_lower_limit"  value="${-pi}"/>
+    <xacro:property name="shoulder_lift_upper_limit"  value="${pi}" />
+    
+    <xacro:property name="elbow_joint_lower_limit"    value="${-pi}"/>
+    <xacro:property name="elbow_joint_upper_limit"    value="${pi}" />
+    
+    <xacro:property name="wrist_1_lower_limit"        value="${-pi}"/>
+    <xacro:property name="wrist_1_upper_limit"        value="${pi}" />
+    
+    <xacro:property name="wrist_2_lower_limit"        value="${-pi}"/>
+    <xacro:property name="wrist_2_upper_limit"        value="${pi}" />
+    
+    <xacro:property name="wrist_3_lower_limit"        value="${-pi}"/>
+    <xacro:property name="wrist_3_upper_limit"        value="${pi}" />
+  </xacro:ur5_robot>
+
+
+  <!-- Controlbox -->
+  <xacro:include filename="$(find butler_robot)/urdf/controlbox.urdf" />
+
+  <!-- EEF -->
+  <xacro:include filename="$(find butler_robot)/urdf/robotiq_2f_85_gripper.urdf" />
+  
+  <!-- World Frame link -->
+  <link name="world" />
+
+  <!-- Connection UR to planning frame world -->
+  <joint name="urFixedJoint" type="fixed">
+    <parent link="base_link" />
+    <child link = "ur_base_link" />
+    <origin xyz="0.25 -0.0125 0.892" rpy="0 0 0" />
+  </joint>
+
+  <!-- Connection MiR to planning frame world where UR is connected -->
+  <joint name="compJoint" type="fixed">
+    <origin xyz="0.153 -0.0325 0.892" rpy="0 0 0" /> <!-- Caluculations: from base_footprint to surface 0.153 = 0.038 + 0.115; - ; 0.892 = 0.352 + 0.54-->
+    <!--<origin xyz="0.093 -0.0125 0.892" rpy="0 0 0" />-->
+    <parent link="base_link" />
+    <child link="world" />
+  </joint>
+
+
+  <!-- Connection controlbox to MiR -->
+  <joint name="boxJoint" type="fixed">
+    <origin xyz="0.038 0 0.622" rpy="0 0 0" />
+    <parent link="base_link" />
+    <child link="box" />
+  </joint>
+
+  <!-- Connection UR to EEF -->
+  <joint name="eef_fixed_joint" type="fixed">
+    <parent link="ur_wrist_3_link" />
+    <child link="robotiq_85_base_link" />
+    <!--origin xyz="0.0 0.0823  0.0" rpy="${pi/2.0} 0.0 ${pi/2.0}" /--> <!-- 0.0823 = wrist_3_length -->
+    <origin xyz="0.0 0.0  0.0" rpy="0.0 0.0 0.0" />
+  </joint>
+
+  <link name="tcp" />
+  <joint name="tcp_gripper_joint" type="fixed">
+    <parent link="ur_flange" />
+    <child link="tcp" />
+    <!-- <origin xyz="0.085 0.0 0.0" rpy="0.0 0.0 0.0" /> -->
+    <origin xyz="0.18 0.0 0.0" rpy="0.0 0.0 0.0" />
+  </joint>
+
+  <!-- Camera plugin for gazebo -->
+  <joint name="camera_joint" type="fixed">
+    <parent link="tcp" />
+    <child link="camera_link" />
+    <origin xyz="0 0 0" rpy="-1.5708 0 -1.5708" />
+  </joint>
+
+  <link name="camera_link" />
+
+  <!-- camera -->
+  <gazebo reference="tcp">
+    <sensor type="camera" name="ee_camera">
+      <update_rate>30.0</update_rate>
+      <camera name="head">
+        <horizontal_fov>1.20428</horizontal_fov>
+        <vertical_fov></vertical_fov>
+        <image>
+          <width>1920</width>
+          <height>1080</height>
+          <format>R8G8B8</format>
+        </image>
+        <clip>
+          <near>0.02</near>
+          <far>300</far>
+        </clip>
+        <noise>
+          <type>gaussian</type>
+          <!-- Noise is sampled independently per pixel on each frame.
+               That pixel's noise value is added to each of its color
+               channels, which at that point lie in the range [0,1]. -->
+          <mean>0.0</mean>
+          <stddev>0.007</stddev>
+        </noise>
+      </camera>
+      <plugin name="camera_controller" filename="libgazebo_ros_camera.so">
+        <alwaysOn>true</alwaysOn>
+        <updateRate>0.0</updateRate>
+        <cameraName>butler/ee_camera</cameraName>
+        <imageTopicName>image_raw</imageTopicName>
+        <cameraInfoTopicName>camera_info</cameraInfoTopicName>
+        <frameName>tcp</frameName>
+        <hackBaseline>0.02</hackBaseline>
+        <distortionK1>0.0</distortionK1>
+        <distortionK2>0.0</distortionK2>
+        <distortionK3>0.0</distortionK3>
+        <distortionT1>0.0</distortionT1>
+        <distortionT2>0.0</distortionT2>
+      </plugin>
+    </sensor>
+  </gazebo>
+
+</robot>
